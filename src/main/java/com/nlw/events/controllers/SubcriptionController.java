@@ -11,10 +11,7 @@ import com.nlw.events.models.User;
 import com.nlw.events.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class SubcriptionController {
@@ -46,5 +43,25 @@ public class SubcriptionController {
             return ResponseEntity.status(409).body(new ErrorMessage(e.getMessage()));
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("subscription/{prettyName}/ranking")
+    public ResponseEntity<?> getCompleteRanking(@PathVariable String prettyName){
+        try{
+            return ResponseEntity.ok(service.getCompleteRanking(prettyName));
+        }
+        catch (EventNotFoundException e){
+            return ResponseEntity.status(404).body(new ErrorMessage(e.getMessage()));
+        }
+    }
+
+    @GetMapping("subscription/{prettyName}/ranking/{userId}")
+    public ResponseEntity<?> getRankingByUser(@PathVariable String prettyName, @PathVariable Integer userId){
+        try {
+            return ResponseEntity.ok(service.getRankingByUser(prettyName, userId));
+        }
+        catch (UserIndicatorNotFoundException e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
     }
 }
